@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Page title</title>
+</head>
+<body>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+  let scene = new THREE.Scene();
+  let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 3;
+  
+  let renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  const loader = new THREE.GLTFLoader();
+  
+  let skeleton;
+let model;
+  loader.load('model.glb', (gltf) => {
+    model = gltf.scene;
+    model.scale.set(1,1,1);
+    console.log(model);
+    scene.add(model);
+
+    // Access the skeleton from the model
+   model.traverse((child) => {
+  
+    if (child.isMesh && child.skeleton) {
+    console.log("yes");
+       skeleton = child.skeleton;
+    }
+ });
+ 
+const light = new THREE.AmbientLight(0xffffff, 0.8);
+      scene.add(light);
+        
+    animate();
+  });
+  m=prompt("m");
+scene.background=new THREE.Color("red");
+  function animate() {
+    requestAnimationFrame(animate);
+
+    // Rotate a specific bone (e.g., bone[0])
+    if (skeleton) {
+    console.log(skeleton.bones[0].rotation.y);
+   skeleton.bones[m].rotation.y += 0.01; 
+    //Adjust the index based on your model
+    }
+camera.rotation.y=0.02;
+camera.position.y = 2;
+    renderer.render(scene, camera);
+  }
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+</script>
+
+</body>
+</html>
